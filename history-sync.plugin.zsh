@@ -45,7 +45,7 @@ function history_sync_pull() {
     fi
 
     # Decrypt
-    gpg --output zsh_history_decrypted --decrypt zsh_history
+    gpg --output zsh_history_decrypted --decrypt $ZSH_HISTORY_FILE_ENC
     if [[ $? != 0 ]]; then
         print_gpg_decrypt_error_msg
         cd $DIR
@@ -53,7 +53,7 @@ function history_sync_pull() {
     fi
 
     # Merge
-    cat $HOME/.zsh_history zsh_history_decrypted | awk '/:[0-9]/ { if(s) { print s } s=$0 } !/:[0-9]/ { s=s""$0 } END { print s }' | sort -u > $HOME/.zsh_history 
+    cat $ZSH_HISTORY_FILE zsh_history_decrypted | awk '/:[0-9]/ { if(s) { print s } s=$0 } !/:[0-9]/ { s=s""$0 } END { print s }' | sort -u > $ZSH_HISTORY_FILE
     rm zsh_history_decrypted
     cd $DIR
 }
