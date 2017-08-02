@@ -9,7 +9,7 @@ colors
 ZSH_HISTORY_FILE=$HOME/.zsh_history
 ZSH_HISTORY_PROJ=$HOME/.zsh_history_proj
 ZSH_HISTORY_FILE_ENC=$ZSH_HISTORY_PROJ/zsh_history
-GIT_COMMIT_MSG="latest $(date)"
+GIT_COMMIT_MSG="History update $(date)"
 
 function print_git_error_msg() {
     echo "$bold_color$fg[red]Fix your git repo...${reset_color}";
@@ -23,6 +23,7 @@ function print_gpg_encrypt_error_msg() {
 
 function print_gpg_decrypt_error_msg() {
     echo "$bold_color$fg[red]GPG failed to decrypt history file... exiting.${reset_color}";
+    echo "$bold_color$fg[red]Env vars are project: $ZSH_HISTORY_PROJ,file: $ZSH_HISTORY_FILE,encrypted: $ZSH_HISTORY_FILE_ENC.${reset_color}";
     return;
 }
 
@@ -62,10 +63,14 @@ function history_sync_pull() {
 function history_sync_push() {
     # Get option recipients
     local recipients=()
-    while getopts -r: opt; do
-        case "$opt" in
+    while getopts ':yr:' opt; do
+        case $opt in
             r)
                 recipients+="$OPTARG"
+                ;;
+            y)
+                commit='y'
+                push='y'
                 ;;
             *)
                 usage
@@ -95,16 +100,19 @@ function history_sync_push() {
             print_gpg_encrypt_error_msg
             return
         fi
-
-        echo -n "$bold_color$fg[yellow]Do you want to commit current local history file? ${reset_color}"
-        read commit
+        if [[ -z $commit ]]; then
+            echo -n "$bold_color$fg[yellow]Do you want to commit current local history file? ${reset_color}"
+            read commit
+        fi
         if [[ -n $commit ]]; then
             case $commit in
                 [Yy]* )
                     DIR=$CWD
                     cd $ZSH_HISTORY_PROJ && git add * && git commit -m "$GIT_COMMIT_MSG"
-                    echo -n "$bold_color$fg[yellow]Do you want to push to remote? ${reset_color}"
-                    read push
+                    if [[ -z $push ]]; then
+                        echo -n "$bold_color$fg[yellow]Do you want to push to remote? ${reset_color}"
+                        read push
+                    fi
                     if [[ -n $push ]]; then
                         case $push in
                             [Yy]* )
