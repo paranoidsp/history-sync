@@ -101,19 +101,13 @@ function history_sync_push() {
             print_gpg_encrypt_error_msg
             return
         fi
-        if [[ -z $commit ]]; then
-            echo -n "$bold_color$fg[yellow]Do you want to commit current local history file? ${reset_color}"
-            read commit
-        fi
         if [[ -n $commit ]]; then
             case $commit in
                 [Yy]* )
                     DIR=$CWD
-                    cd $ZSH_HISTORY_PROJ && git add * && git commit -m "$GIT_COMMIT_MSG"
-                    if [[ -z $push ]]; then
-                        echo -n "$bold_color$fg[yellow]Do you want to push to remote? ${reset_color}"
-                        read push
-                    fi
+                    echo "Ready to commit"
+                    cd $ZSH_HISTORY_PROJ && git add . && git commit -m "$GIT_COMMIT_MSG"
+                    echo "Committed"
                     if [[ -n $push ]]; then
                         case $push in
                             [Yy]* )
