@@ -54,8 +54,9 @@ function history_sync_pull() {
     fi
 
     # Merge
-    cat $ZSH_HISTORY_FILE zsh_history_decrypted | awk '/:[0-9]/ { if(s) { print s } s=$0 } !/:[0-9]/ { s=s""$0 } END { print s }' | sort -u > $ZSH_HISTORY_FILE
-    rm zsh_history_decrypted
+    #cat $ZSH_HISTORY_FILE zsh_history_decrypted | awk '/:[0-9]/ { if(s) { print s } s=$0 } !/:[0-9]/ { s=s""$0 } END { print s }' | sort -u > $ZSH_HISTORY_FILE
+    # No fancy stuff, just dump file into current history
+    cat zsh_history_decrypted > $ZSH_HISTORY_FILE
     cd $DIR
 }
 
