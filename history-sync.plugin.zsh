@@ -55,8 +55,9 @@ function history_sync_pull() {
 
     # Merge
     #cat $ZSH_HISTORY_FILE zsh_history_decrypted | awk '/:[0-9]/ { if(s) { print s } s=$0 } !/:[0-9]/ { s=s""$0 } END { print s }' | sort -u > $ZSH_HISTORY_FILE
-    cat $ZSH_HISTORY_FILE zsh_history_decrypted | awk -v date="WILL_NOT_APPEAR$(date +"%s")" '{if (sub(/\\$/,date)) printf "%s", $0; else print $0}' | LC_ALL=C sort -u | awk -v date="WILL_NOT_APPEAR$(date +"%s")" '{gsub('date',"\\\n"); print $0}' > $ZSH_HISTORY_FILE
-    rm zsh_history_decrypted
+    cat $ZSH_HISTORY_FILE zsh_history_decrypted | awk -v date="WILL_NOT_APPEAR$(date +"%s")" '{if (sub(/\\$/,date)) printf "%s", $0; else print $0}' | LC_ALL=C sort -u | awk -v date="WILL_NOT_APPEAR$(date +"%s")" '{gsub('date',"\\\n"); print $0}' > zsh_history_temp
+    cp zsh_history_temp $ZSH_HISTORY_FILE
+    rm zsh_history_decrypted zsh_history_temp
     cd $DIR
 }
 
