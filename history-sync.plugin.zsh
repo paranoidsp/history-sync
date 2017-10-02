@@ -62,7 +62,13 @@ function history_sync_pull() {
     cat $ZSH_HISTORY_FILE zsh_history_decrypted | sort -u | wc
     cat $ZSH_HISTORY_FILE zsh_history_decrypted | sort -u > zsh_history_temp
     echo "Old\t\t\t\t\t\t Combined \t\t\t\t New"
-    echo "$(cat zsh_history_decrypted | sort -u |  md5 )\t $(cat zsh_history_decrypted $ZSH_HISTORY_FILE | sort -u |  md5 )\t $(cat zsh_history_temp | sort -u | md5 )"
+    unameOut="$(uname -s)"
+    case "${unameOut}" in
+        Linux*)     MD5_COMMAND=md5sum;;
+        Darwin*)    MD5_COMMAND=md5;;
+        *)          MD5_COMMAND=md5sum;;
+    esac
+    echo "$(cat zsh_history_decrypted | sort -u | ${MD5_COMMAND} )\t $(cat zsh_history_decrypted $ZSH_HISTORY_FILE | sort -u | ${MD5_COMMAND} )\t $(cat zsh_history_temp | sort -u | ${MD5_COMMAND} )"
     mv zsh_history_temp $ZSH_HISTORY_FILE
     cat $ZSH_HISTORY_FILE | sort -u | wc
     #cat $ZSH_HISTORY_FILE zsh_history_decrypted | awk -v date="WILL_NOT_APPEAR$(date +"%s")" '{if (sub(/\\$/,date)) printf "%s", $0; else print $0}' | LC_ALL=C sort -u | awk -v date="WILL_NOT_APPEAR$(date +"%s")" '{gsub('date',"\\\n"); print $0}' > zsh_history_temp
