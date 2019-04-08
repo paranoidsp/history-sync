@@ -33,6 +33,10 @@ function usage() {
 
 # Pull current master, decrypt, and merge with .zsh_history
 function history_sync_pull() {
+    # Set locale for mac sort
+    export LC_ALL="c"
+    export LANG="c"
+
     # Backup
     cp -a $HOME/{.zsh_history,.zsh_history.backup}
     DIR=$CWD
@@ -75,6 +79,8 @@ function history_sync_pull() {
     #cp zsh_history_temp $ZSH_HISTORY_FILE
     rm zsh_history_decrypted
     cd $DIR
+    export LC_ALL=en_US.UTF-8  
+    export LANG=en_US.UTF-8
 }
 
 # Encrypt and push current history to master
@@ -152,6 +158,9 @@ function history_sync_push() {
             esac
         fi
     fi
+
+    export LC_ALL=en_US.UTF-8  
+    export LANG=en_US.UTF-8
 }
 
 alias zhpl=history_sync_pull
