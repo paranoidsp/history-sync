@@ -6,9 +6,14 @@
 autoload -U colors
 colors
 
-ZSH_HISTORY_FILE=$HOME/.zsh_history
-ZSH_HISTORY_PROJ=$HOME/.zsh_history_proj
-ZSH_HISTORY_FILE_ENC=$ZSH_HISTORY_PROJ/zsh_history
+# ZSH_HISTORY_FILE=$HOME/.zsh_history
+# ZSH_HISTORY_BACKUP_FILE=$HOME/.zsh_history
+# ZSH_HISTORY_PROJ=$HOME/.zsh_history_proj
+# ZSH_HISTORY_FILE_ENC=$ZSH_HISTORY_PROJ/zsh_history
+export ZSH_HISTORY_PROJ="$HOME/git/system-config/misc-config"
+export ZSH_HISTORY_FILE="${ZSH_HISTORY_PROJ}/zsh_history"
+export ZSH_HISTORY_BACKUP_FILE="${ZSH_HISTORY_PROJ}/zsh_history_backup"
+export ZSH_HISTORY_FILE_ENC="$HOME/git/system-config/misc-config/history/zsh_history_enc"
 GIT_COMMIT_MSG="History update $(date)"
 
 function print_git_error_msg() {
@@ -38,7 +43,7 @@ function history_sync_pull() {
     export LANG="c"
 
     # Backup
-    cp -a $HOME/{.zsh_history,.zsh_history.backup}
+    cp -a {$ZSH_HISTORY_FILE,$ZSH_HISTORY_BACKUP_FILE}
     DIR=$CWD
 
     # Pull
